@@ -1,4 +1,4 @@
-group=azure-load-balancer-introduction
+group=ANDIS-load-balancer
 az group create -g $group -l northeurope
 username=adminuser
 password='SecretPassword123!@#'
@@ -8,7 +8,7 @@ az network vnet create \
   -g $group \
   -l northeurope \
   --address-prefixes '192.168.0.0/16' \
-  --subnet-name subnet \
+  --subnet-name ANDIS-subnet \
   --subnet-prefixes '192.168.1.0/24'
   
 az vm availability-set create \
@@ -26,7 +26,7 @@ do
     --image Win2019Datacenter \
     --admin-username $username \
     --admin-password $password \
-    --vnet-name vm-vnet \
+    --vnet-name ANDIS-vm-vnet \
     --subnet subnet \
     --public-ip-address "" \
     --availability-set vm-as \
@@ -35,14 +35,14 @@ done
 
 for NUM in 1 2 3
 do
-  az vm open-port -g $group --name vm-eu-0$NUM --port 80
+  az vm open-port -g $group --name vm-$NUM --port 80
 done
 
 for NUM in 1 2 3
 do
   az vm extension set \
     --name CustomScriptExtension \
-    --vm-name vm-eu-0$NUM \
+    --vm-name vm-$NUM \
     -g $group \
     --publisher Microsoft.Compute \
     --version 1.8 \
